@@ -4,12 +4,19 @@ import Menu1 from "../data/menu/menu1.svg"
 import Menu2 from "../data/menu/menu2.svg"
 import Menu3 from "../data/menu/menu3.svg"
 
-export default function BottomBar() {
+export default function BottomBar({ navigation }) {
+    const form = true
     return (
         <View style={styles.menu}>
-            <Menu2 />
-            <Menu1 />
-            <Menu3 />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <Menu2 />
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <Menu1 />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('History', { form })}>
+                <Menu3 />
+            </TouchableOpacity>
         </View>
     )
 }

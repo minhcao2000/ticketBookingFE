@@ -7,7 +7,9 @@ import BoardLogo from "../../data/board.svg"
 import BottomBar from '../../component/bottomBar'
 import MenuButton2 from "../../data/menuButton2.svg"
 
-export default function ETicket({navigation}) {
+export default function ETicket({ route, navigation }) {
+    const { nameSeats, timeee, room } = route.params
+    // console.log(seats)
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -24,26 +26,28 @@ export default function ETicket({navigation}) {
                 <Text style={{ fontSize: 17, color: "white", fontWeight: '900', letterSpacing: 1.8, marginRight: 15 }}>E-TICKET</Text>
                 <MenuButton2 />
             </View>
-            <Text style={{ fontSize: 18, fontWeight: '700', letterSpacing: 1.2, color: "white", marginHorizontal: 60, textAlign: "center", marginTop: -80, textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: {width: -1, height: 1}, textShadowRadius: 10, lineHeight: 26 }}>
+            <Text style={{ fontSize: 18, fontWeight: '700', letterSpacing: 1.2, color: "white", marginHorizontal: 60, textAlign: "center", marginTop: -80, textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: -1, height: 1 }, textShadowRadius: 10, lineHeight: 26 }}>
                 Once you buy a movie ticket simply scan the barcode to access to your movie.
             </Text>
-            <View  style = {{marginBottom: 40}}>
+            <View style={{ marginBottom: 40 }}>
                 <Image source={require("../../data/film2.jpg")} style={{ height: 320, width: 220, borderRadius: 20, marginBottom: 10, position: 'absolute', top: 30, transform: [{ rotate: '10deg' }, { translateX: 24 }] }} />
                 <Image source={require("../../data/film1.jpg")} style={{ height: 320, width: 220, borderRadius: 20, marginBottom: 10, position: 'absolute', top: 30, transform: [{ rotate: '-10deg' }, { translateX: -24 }] }} />
                 <Image source={require("../../data/film3.jpg")} style={{ height: 320, width: 220, borderRadius: 20, marginBottom: 10, position: 'absolute', top: 20 }} />
                 <View style={{ height: 140, width: 220, backgroundColor: "#B7ADDF", marginTop: 330, borderBottomEndRadius: 20, borderBottomStartRadius: 20, flexDirection: "colume", justifyContent: "space-around", alignItems: "center", padding: 8 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
-                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 20 }}>Date: Sept 26</Text>
-                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2 }}>Time: 4 p.m.</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
+                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 20 }}>Room: {room}</Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
-                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 28 }}>Row: 1 ,2</Text>
-                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2 }}>Seats: 3 , 9 , 10</Text>
+                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 20 }}>Time: {timeee}:00</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" }}>
+                        <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 20 }}>Seats: </Text>
+                        {nameSeats.map((n, i) => <Text style={{ fontSize: 12, fontWeight: '500', letterSpacing: 1.2, marginRight: 10 }}>{n}</Text>)}
                     </View>
                     <CodeBarre />
                 </View>
             </View>
-            <BottomBar/>
+            <BottomBar navigation={navigation} />
         </View>
     )
 }

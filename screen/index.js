@@ -14,6 +14,9 @@ import Movie from "./movie";
 import Board from "./board";
 import Seat from "./seat";
 import ETicket from "./eTicket";
+import InfoUser from "./infoUser";
+import Login from "./login";
+import History from "./history";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +29,9 @@ export default function RootComponent() {
                 <Stack.Screen name="Movie" component={Movie} options={{ headerShown: false }} />
                 <Stack.Screen name="Seat" component={Seat} options={{ headerShown: false }} />
                 <Stack.Screen name="ETicket" component={ETicket} options={{ headerShown: false }} />
+                <Stack.Screen name="InfoUser" component={InfoUser} options={{ headerShown: false }} />
+                <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+                <Stack.Screen name="History" component={History} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

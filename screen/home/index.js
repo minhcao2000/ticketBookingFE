@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import BackgroundHome from "../../data/backgroundHome.svg"
 import BoardLogo from "../../data/board.svg"
@@ -11,9 +11,26 @@ import BottomBar from '../../component/bottomBar'
 import Svg, {
     Use,
 } from 'react-native-svg';
+import { ReadMovies } from '../../service';
 
 export default function Home({ navigation }) {
     const [index, setIndex] = React.useState(1)
+    const [movies, setMovies] = React.useState([])
+    const [search, setSearch] = React.useState("")
+
+    const handleGetAllMoviesAPI = async () => {
+        const response = await ReadMovies()
+        console.log(response.movies[0].Name)
+        setMovies(response.movies)
+    }
+
+    // const [listmovie, setListMovie] = React.useState()
+
+
+
+    React.useEffect(() => {
+        handleGetAllMoviesAPI()
+    }, [])
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -38,12 +55,15 @@ export default function Home({ navigation }) {
             <View style={styles.body}>
                 <View style={styles.search}>
                     <Search />
-                    <Text style={{ fontSize: 16, color: "#EBEBF5", fontWeight: '400', letterSpacing: 1.5, marginRight: 180 }}>Search</Text>
+                    <TextInput style={{ fontSize: 16, color: "#EBEBF5", fontWeight: '400', letterSpacing: 1.5, width: 240 }} value={search} onChangeText={e => {
+                        setSearch(e)
+                        setIndex(0)
+                    }} placeholder="Enter your mine" />
                     <Microphone />
                 </View>
-                <SlidePoster index={index} setIndex={setIndex} navigation={navigation}/>
+                <SlidePoster index={index} setIndex={setIndex} navigation={navigation} movies={movies} setMovies={setMovies} search={search} />
             </View>
-            <BottomBar />
+            <BottomBar navigation={navigation} />
         </View>
     );
 }

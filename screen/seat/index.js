@@ -12,12 +12,43 @@ import Seat3 from "../../data/seat/Seat3.svg"
 import Calendar from "../../data/Calendar.svg"
 import Buy from "../../data/Buy.svg"
 import Ticket from "../../data/Ticket.svg"
+import { SeatOfShow } from '../../service';
 import Svg, {
     Use,
 } from 'react-native-svg';
 
 export default function Seat({ route, navigation }) {
-    const [seats, setSeats] = React.useState(["null", "null", "empty", "null", "null", "null", "null", "null", "null", "null", "empty", "null", "null", "null", "null", "null", "null", "null", "empty", "null", "null", "null", "null", "null", "null", "null", "empty", "doing", "doing", "done", "done", "done", "done", "done", "empty", "done", "done", "done", "null", "null", "null", "null", "empty", "done", "done", "done", "done", "null"])
+    const { showId, timeee } = route.params
+    const [seatss, setSeatss] = React.useState([])
+    const [seats, setSeats] = React.useState([])
+    const [nameSeats, setNameSeats] = React.useState([])
+
+    const handleGetSeatsAPI = async () => {
+        // console.log(showId)
+        const response = await SeatOfShow(showId)
+        // console.log(response)
+        setSeatss(response.seats)
+        // const handleShow = handleGetShowMoviesAPI(response.shows)
+        // setMovies(response.movies)
+    }
+
+    const handleSeats = ({ id, name }) => {
+        if (seats.includes(id)) {
+            const tmp = seats.filter(item => item !== id)
+            const tmpp = nameSeats.filter(item => item !== name)
+            setSeats(tmp)
+            setNameSeats(tmpp)
+
+        } else {
+            setSeats([...seats, id])
+            setNameSeats([...nameSeats, name])
+        }
+    }
+
+
+    React.useEffect(() => {
+        handleGetSeatsAPI()
+    }, [])
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -38,21 +69,23 @@ export default function Seat({ route, navigation }) {
                 <Screen style={{ marginBottom: 60 }} />
                 <View style={styles.seat}>
                     {
-                        seats.map((seat, ind) => {
-                            if (seat == "null") {
-                                return <TouchableOpacity key={ind} style={{ margin: 5 }}>
+                        seatss.map((seat, ind) => {
+                            if (seat.State == "True") {
+                                return <View key={ind} style={{ margin: 5 }}>
                                     <Seat1 />
-                                </TouchableOpacity>
-                            } else if (seat == "doing") {
-                                return <TouchableOpacity key={ind} style={{ margin: 5 }}>
-                                    <Seat2 />
-                                </TouchableOpacity>
-                            } else if (seat == "done") {
-                                return <TouchableOpacity key={ind} style={{ margin: 5 }}>
-                                    <Seat3 />
-                                </TouchableOpacity>
-                            } else {
-                                return <View key={ind} style={{ marginVertical: 5, marginHorizontal: 20 }}></View>
+                                </View>
+                            } else if (seat.State == "False") {
+                                if (seats.includes(seat._id)) {
+                                    return <TouchableOpacity key={ind} style={{ margin: 5 }} onPress={() => handleSeats({ id: seat._id, name: seat.Col_index + seat.Row_index })}>
+                                        <Seat2 />
+                                    </TouchableOpacity>
+                                }
+                                else {
+                                    return <TouchableOpacity key={ind} style={{ margin: 5 }} onPress={() => handleSeats({ id: seat._id, name: seat.Col_index + seat.Row_index })}>
+                                        <Seat3 />
+                                    </TouchableOpacity>
+                                }
+
                             }
                         })
                     }
@@ -101,19 +134,24 @@ export default function Seat({ route, navigation }) {
                         <Text style={{ fontSize: 12, color: "#D4D4D4", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>Selected</Text>
                     </View>
                 </View>
-                <View style={{ flexDirection: "row", width: 360, marginVertical: 30 }}>
-                    <View>
+                <View style={{ flexDirection: "row", marginVertical: 30, justifyContent: "center" }}>
+                    <View style={{ width: 240 }}>
                         <View style={{ flexDirection: "row", marginVertical: 6 }}>
                             <Calendar style={{ marginRight: 20 }} />
-                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>Sept 26 , 2022.  4 p.m.</Text>
+                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>{timeee}:00</Text>
                         </View>
                         <View style={{ flexDirection: "row", marginVertical: 6 }}>
                             <Ticket style={{ marginRight: 20 }} />
-                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>VIP Section.  Seat 3 ,9 ,10</Text>
+                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>Room: {seatss[0]?.Room_number}</Text>
+                            <View style={{ flexDirection: "row" }}>
+                                {nameSeats.map((n, i) => {
+                                    return <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>{n}</Text>
+                                })}
+                            </View>
                         </View>
                         <View style={{ flexDirection: "row", marginVertical: 6 }}>
                             <Buy style={{ marginRight: 20 }} />
-                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>Total: ₹800.00</Text>
+                            <Text style={{ fontSize: 14, color: "white", fontWeight: '400', letterSpacing: 1.2, marginRight: 15 }}>Total: {seats.length * 45000}</Text>
                         </View>
                     </View>
                     <TouchableOpacity style={{
@@ -128,7 +166,7 @@ export default function Seat({ route, navigation }) {
                         elevation: 4,
                         marginLeft: 30
                     }}
-                        onPress={() => navigation.navigate('ETicket')}>
+                        onPress={() => navigation.navigate('Login', { seats, nameSeats, timeee, room: seatss[0]?.Room_number })}>
                         <Text style={{ fontSize: 20, color: "white", fontWeight: '700', letterSpacing: 1.5, marginBottom: 5 }}>Buy</Text>
                     </TouchableOpacity>
                 </View>
@@ -173,13 +211,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: 'center',
         marginTop: -80,
-        marginBottom: 10
+        marginBottom: 10,
+        height: 540
     },
     seat: {
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: 'center',
         flexWrap: "wrap",
-        width: 340
+        width: 300,
+        height: 220
     }
 });
